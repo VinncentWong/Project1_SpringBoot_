@@ -1,5 +1,8 @@
-package com.project.entities.response;
+package com.project.response;
 
+import org.springframework.stereotype.Component;
+
+@Component
 public class AuthResponse {
     private String message;
     private int code;
