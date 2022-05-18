@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import javax.transaction.Transactional;
 
+import com.project.dto.LoginDto;
 import com.project.entities.Customer;
 import com.project.exception.CustomerNotFoundException;
 import com.project.repository.CustomerRepository;
@@ -34,8 +35,8 @@ public class CustomerService {
         return response;
     }
 
-    public AuthResponse login(Customer bodyCustomer) throws CustomerNotFoundException{
-        Optional<Customer> customer = customerRepository.findByName(bodyCustomer.getName());
+    public AuthResponse login(LoginDto bodyCustomer) throws CustomerNotFoundException{
+        Optional<Customer> customer = customerRepository.findByEmail(bodyCustomer.getEmail());
         if(customer.isEmpty()){
             throw new CustomerNotFoundException("Customer doesn't exist in database !");
         }
