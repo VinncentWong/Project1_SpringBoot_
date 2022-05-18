@@ -1,5 +1,7 @@
 package com.project.entities;
 
+import java.util.Date;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -8,7 +10,10 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PositiveOrZero;
 
+import lombok.Data;
+
 @Entity
+@Data
 public class Book {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,9 +36,9 @@ public class Book {
     private int price;
 
     @NotNull
-    private LocalTime created_at;
+    private Date created_at;
 
-    private LocalTime updated_at;
+    private Date updated_at;
     
-    private LocalTime deleted_at;
+    private Date deleted_at;
 }

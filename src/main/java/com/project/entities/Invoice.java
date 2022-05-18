@@ -1,6 +1,6 @@
 package com.project.entities;
 
-import java.time.LocalTime;
+import java.util.Date;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -32,9 +32,9 @@ public class Invoice{
     private int totalPrice;
     
     @NotNull
-    private LocalTime created_at;
+    private Date created_at;
 
-    private LocalTime updated_at;
+    private Date updated_at;
     
-    private LocalTime deleted_at;
+    private Date deleted_at;
 }
