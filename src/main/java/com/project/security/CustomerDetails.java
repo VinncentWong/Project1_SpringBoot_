@@ -1,18 +1,13 @@
-package com.project.security.userdetails;
+package com.project.security;
 
 import java.util.Collection;
 
 import com.project.entities.Customer;
-import com.project.repository.CustomerRepository;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 public class CustomerDetails implements UserDetails{
-
-    @Autowired
-    private CustomerRepository customerRepository;
 
     private Customer customer;
 
@@ -22,7 +17,6 @@ public class CustomerDetails implements UserDetails{
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -33,7 +27,7 @@ public class CustomerDetails implements UserDetails{
 
     @Override
     public String getUsername() {
-        return customer.getPassword();
+        return customer.getName();
     }
 
     @Override
