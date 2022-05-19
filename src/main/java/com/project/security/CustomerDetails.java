@@ -6,7 +6,9 @@ import com.project.entities.Customer;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Component;
 
+@Component
 public class CustomerDetails implements UserDetails{
 
     private Customer customer;
