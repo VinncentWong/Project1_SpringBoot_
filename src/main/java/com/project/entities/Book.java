@@ -47,7 +47,6 @@ public class Book {
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Invoice invoice;
     
-    @NotNull
     private Date created_at;
 
     private Date updated_at;

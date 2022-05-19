@@ -37,7 +37,6 @@ public class Admin {
     @OneToMany(mappedBy = "admin", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Book[] books;
 
-    @NotNull
     private Date created_at;
 
     private Date updated_at;

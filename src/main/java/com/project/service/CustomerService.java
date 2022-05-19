@@ -77,7 +77,7 @@ public class CustomerService {
         }
     }
 
-    public AuthResponse updateUser(long id, Customer bodyCustomer){
+    public AuthResponse updateCustomer(long id, Customer bodyCustomer){
         Optional<Customer> customer = customerRepository.findById(id);
         if(customer.isEmpty()){
             response.setMessage("Customer doesn't exist in database !");

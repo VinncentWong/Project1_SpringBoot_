@@ -1,4 +1,4 @@
-package com.project.response;
+package com.project.exception;
 
 public class PropertyNullException extends Exception{
     public PropertyNullException(){

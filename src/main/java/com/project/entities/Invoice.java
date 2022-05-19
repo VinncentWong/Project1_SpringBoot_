@@ -37,7 +37,6 @@ public class Invoice{
     @OneToMany(mappedBy = "customer", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Book books;
     
-    @NotNull
     private Date created_at;
 
     private Date updated_at;
