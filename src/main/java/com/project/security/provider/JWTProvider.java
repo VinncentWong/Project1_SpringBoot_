@@ -12,8 +12,12 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.SignatureException;
+import io.jsonwebtoken.UnsupportedJwtException;
 public class JWTProvider implements AuthenticationProvider{
 
     @Value("${jwt.secret}")
@@ -27,8 +31,20 @@ public class JWTProvider implements AuthenticationProvider{
             authorities.add(new SimpleGrantedAuthority("true"));
             return new JWTAuthentication(authentication.getPrincipal().toString(), null, authorities);
         }
-        catch(JwtException ex){
-            throw new JwtException("Token doesn't valid! ");
+        catch(SignatureException ex){
+            throw new SignatureException("Token signature doesn't valid! ");
+        }
+        catch(MalformedJwtException ex){
+            throw new MalformedJwtException("Token doesn't valid");
+        }
+        catch(ExpiredJwtException ex){
+            throw new JwtException("Jwt token expired");
+        }
+        catch(UnsupportedJwtException ex){
+            throw new UnsupportedJwtException("Jwt token doesn't supported");
+        }
+        catch(IllegalArgumentException ex){
+            throw new IllegalArgumentException("Jwt claims is empty");
         }
     }
 
