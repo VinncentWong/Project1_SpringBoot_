@@ -7,6 +7,12 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.project.security.authentication.JWTAuthentication;
+import com.project.security.manager.JWTManager;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -14,6 +20,9 @@ import io.jsonwebtoken.JwtException;
 @Component
 public class JWTFilter extends OncePerRequestFilter{
 
+    @Autowired
+    private JWTManager jwtManager;
+    
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
@@ -22,6 +31,8 @@ public class JWTFilter extends OncePerRequestFilter{
             throw new JwtException("Request doesn't valid! ");
         }
         String token = header.substring(7,header.length());
+        Authentication authenticate = jwtManager.authenticate(new JWTAuthentication(token, null));
+        SecurityContextHolder.getContext().setAuthentication(authenticate);
     }
     
 }
