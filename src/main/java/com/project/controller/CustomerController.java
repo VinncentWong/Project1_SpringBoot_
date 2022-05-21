@@ -2,7 +2,6 @@ package com.project.controller;
 
 import javax.validation.Valid;
 
-import com.project.dto.LoginDto;
 import com.project.entities.Customer;
 import com.project.exception.CustomerNotFoundException;
 import com.project.exception.PropertyNullException;
@@ -33,8 +32,8 @@ public class CustomerController {
         return customerService.registerCustomer(bodyCustomer);
     }
 
-    @PostMapping("/login")
-    public AppResponse login(@RequestBody LoginDto bodyCustomer) throws CustomerNotFoundException, PropertyNullException{
+    @GetMapping("/login")
+    public AppResponse login() throws CustomerNotFoundException, PropertyNullException{
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return customerService.login(authentication);
     }
