@@ -9,6 +9,10 @@ import org.springframework.stereotype.Component;
 @Component
 public class AuthAuthentication extends UsernamePasswordAuthenticationToken{
 
+    public AuthAuthentication(){
+        super(null, null);
+    }
+    
     public AuthAuthentication(Object principal, Object credentials) {
         super(principal, credentials);
         //TODO Auto-generated constructor stub

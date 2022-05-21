@@ -7,6 +7,7 @@ import java.util.Optional;
 
 import javax.transaction.Transactional;
 
+import com.project.dto.LoginDto;
 import com.project.entities.Customer;
 import com.project.exception.CustomerNotFoundException;
 import com.project.repository.CustomerRepository;
@@ -14,7 +15,6 @@ import com.project.response.AppResponse;
 import com.project.util.JWTUtil;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -38,11 +38,15 @@ public class CustomerService {
         response.setMessage("Successfully add your data into database !");
         response.setCode(201);
         response.setSuccess(true);
+        Map<String, Object> data = new HashMap<>();
+        data.put("data", customer);
+        response.setData(data);
+        customerRepository.save(customer);
         return response;
     }
 
-    public AppResponse login(Authentication auth) throws CustomerNotFoundException{
-        Optional<Customer> customer = customerRepository.findByEmail(auth.getPrincipal().toString());
+    public AppResponse login(LoginDto login) throws CustomerNotFoundException{
+        Optional<Customer> customer = customerRepository.findByEmail(login.getEmail());
         if(customer.isEmpty()){
             response.setSuccess(false);
             response.setCode(401);
@@ -51,10 +55,10 @@ public class CustomerService {
             return response;
         }
         String password = customer.get().getPassword();
-        if(new BCryptPasswordEncoder().matches(auth.getCredentials().toString(), password)){
+        if(new BCryptPasswordEncoder().matches(login.getPassword(), password)){
             Map<String, Object> data = new HashMap<>();
-            data.put("email", auth.getPrincipal());
-            data.put("password", auth.getCredentials());
+            data.put("email", login.getEmail());
+            data.put("password", login.getPassword());
             data.put("token", util.generateToken(customer.get()));
             response.setCode(200);
             response.setMessage("Authenticated! ");
@@ -86,6 +90,7 @@ public class CustomerService {
             response.setSuccess(false);
             return response;
         } else {
+            customerRepository.delete(customer.get());
             response.setMessage("Success delete the user !");
             response.setCode(200);
             response.setSuccess(true);

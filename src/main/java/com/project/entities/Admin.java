@@ -1,6 +1,7 @@
 package com.project.entities;
 
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -35,7 +36,7 @@ public class Admin {
     private String email;
     
     @OneToMany(mappedBy = "admin", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Book[] books;
+    private List<Book> books;
 
     private Date created_at;
 

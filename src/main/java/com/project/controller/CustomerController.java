@@ -2,6 +2,7 @@ package com.project.controller;
 
 import javax.validation.Valid;
 
+import com.project.dto.LoginDto;
 import com.project.entities.Customer;
 import com.project.exception.CustomerNotFoundException;
 import com.project.exception.PropertyNullException;
@@ -9,8 +10,6 @@ import com.project.response.AppResponse;
 import com.project.service.CustomerService;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -32,10 +31,9 @@ public class CustomerController {
         return customerService.registerCustomer(bodyCustomer);
     }
 
-    @GetMapping("/login")
-    public AppResponse login() throws CustomerNotFoundException, PropertyNullException{
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return customerService.login(authentication);
+    @PostMapping("/login")
+    public AppResponse login(@RequestBody @Valid LoginDto bodyLogin) throws CustomerNotFoundException, PropertyNullException{
+        return customerService.login(bodyLogin);
     }
 
     @GetMapping("/get/{id}")

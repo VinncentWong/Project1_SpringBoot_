@@ -20,10 +20,6 @@ public class AuthenticationFilter extends OncePerRequestFilter{
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException, PropertyNotFoundException {
-       
-        if(request.getHeader("email") == null || request.getHeader("password") == null){
-            throw new PropertyNotFoundException("Property can't be empty! ");
-        }
         SecurityContextHolder.getContext().setAuthentication(new AuthAuthentication(request.getHeader("email"), request.getHeader("password"), new ArrayList<SimpleGrantedAuthority>()));
         filterChain.doFilter(request, response);
     }

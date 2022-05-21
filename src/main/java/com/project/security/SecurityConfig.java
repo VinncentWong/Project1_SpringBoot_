@@ -7,6 +7,7 @@ import com.project.security.provider.JWTProvider;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -27,13 +28,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 
         http
         .authorizeRequests()
-        .mvcMatchers("/customer/login", "/customer/signup")
-        .permitAll()
         .anyRequest()
-        .authenticated();
+        .permitAll();
 
         http.formLogin().disable();
         http.csrf().disable();
+    }
+
+    @Override
+    public void configure(WebSecurity web) throws Exception {
+        web.ignoring()
+            .mvcMatchers("/customer/login", "/customer/register");
     }
     
 }

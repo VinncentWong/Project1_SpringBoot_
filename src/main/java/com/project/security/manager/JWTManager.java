@@ -14,6 +14,8 @@ public class JWTManager implements AuthenticationManager{
     @Autowired
     private JWTProvider jwtProvider;
 
+    public JWTManager() {}
+
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         return jwtProvider.authenticate(authentication);
