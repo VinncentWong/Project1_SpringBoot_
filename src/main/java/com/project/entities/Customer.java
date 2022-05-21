@@ -37,6 +37,10 @@ public class Customer {
     @OneToMany(mappedBy = "customer", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Book> books;
 
+    @NotEmpty
+    @NotNull
+    private String role;
+    
     private Date created_at;
 
     private Date updated_at;

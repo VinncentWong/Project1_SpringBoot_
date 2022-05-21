@@ -1,6 +1,8 @@
 package com.project.service;
 
+import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -8,6 +10,7 @@ import com.project.dto.LoginDto;
 import com.project.entities.Admin;
 import com.project.entities.Book;
 import com.project.exception.AdminNotFoundException;
+import com.project.exception.BookNotFoundException;
 import com.project.exception.PasswordDoesntMatchException;
 import com.project.repository.AdminRepository;
 import com.project.repository.BookRepository;
@@ -34,6 +37,8 @@ public class AdminService {
     private AppResponse response;
     
     public AppResponse createAdmin(Admin admin){
+        admin.setCreated_at(new Date());
+        admin.setRole("ROLE_ADMIN");
         adminRepository.save(admin);
         Map<String, Object> data = new HashMap<>();
         data.put("data", admin);
@@ -97,12 +102,97 @@ public class AdminService {
         return response;
     }
 
+    public AppResponse updateAdmin(Long id, Admin bodyAdmin) throws AdminNotFoundException{
+        Optional<Admin> admin = adminRepository.findById(id);
+        if(admin.isEmpty()){
+            throw new AdminNotFoundException("Admin data doesn't found in database! ");
+        }
+        if(bodyAdmin.getName() != null){
+            admin.get().setName(bodyAdmin.getName());
+        }
+        if(bodyAdmin.getPassword() != null){
+            admin.get().setPassword(bodyAdmin.getPassword());
+        }
+        admin.get().setUpdated_at(new Date());
+        adminRepository.save(admin.get());
+        Map<String, Object> data = new HashMap<>();
+        data.put("data", admin);
+        response.setCode(200);
+        response.setMessage("Succesfully update Book data! ");
+        response.setSuccess(true);
+        response.setData(data);
+        return response;
+    }
     public AppResponse addBook(Book book){
         bookRepository.save(book);
         Map<String, Object> data = new HashMap<>();
         data.put("data", book);
         response.setCode(200);
         response.setMessage("Succesfully add Book data! ");
+        response.setSuccess(true);
+        response.setData(data);
+        return response;
+    }
+
+    public AppResponse deleteBook(Long id) throws BookNotFoundException{
+        Optional<Book> book = bookRepository.findById(id);
+        if(book.isEmpty()){
+            throw new BookNotFoundException("Book data doesn't found! ");
+        }
+        bookRepository.delete(book.get());
+        response.setMessage("Succesfully delete Book data! ");
+        response.setSuccess(true);
+        response.setData(null);
+        return response;
+    }
+
+    public AppResponse updateBook(Long id, Book bodyBook) throws BookNotFoundException{
+        Optional<Book> book = bookRepository.findById(id);
+        if(book.isEmpty()){
+            throw new BookNotFoundException("Book data doesn't found! ");
+        }
+        if(bodyBook.getName() != null){
+            book.get().setName(bodyBook.getName());
+        }
+        if(bodyBook.getPrice() != book.get().getPrice()){
+            book.get().setPrice(bodyBook.getPrice());
+        }
+        if(bodyBook.getStock() != book.get().getStock()){
+            book.get().setStock(bodyBook.getStock());
+        }
+        if(bodyBook.getSynopsis() != null){
+            book.get().setSynopsis(bodyBook.getSynopsis());
+        }
+        bookRepository.save(book.get());
+        Map<String, Object> data = new HashMap<>();
+        data.put("data", book.get());
+        response.setMessage("Succesfully update Book data! ");
+        response.setSuccess(true);
+        response.setData(data);
+        return response;
+    }
+
+    public AppResponse getBookById(Long id) throws BookNotFoundException{
+        Optional<Book> book = bookRepository.findById(id);
+        if(book.isEmpty()){
+            throw new BookNotFoundException("Book data doesn't found! ");
+        }
+        Map<String, Object> data = new HashMap<>();
+        data.put("data", book.get());
+        response.setMessage("Succesfully update Book data! ");
+        response.setSuccess(true);
+        response.setData(data);
+        return response;
+    }
+
+    public AppResponse getBook() throws BookNotFoundException{
+        List<Book> book = bookRepository.findAll();
+        if(book.isEmpty()){
+            throw new BookNotFoundException("Book data doesn't found! ");
+        }
+        Map<String, Object> data = new HashMap<>();
+        data.put("data", book);
+        response.setMessage("Succesfully update Book data! ");
         response.setSuccess(true);
         response.setData(data);
         return response;

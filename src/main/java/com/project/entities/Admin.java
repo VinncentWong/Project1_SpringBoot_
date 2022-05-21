@@ -38,6 +38,10 @@ public class Admin {
     @OneToMany(mappedBy = "admin", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Book> books;
 
+    @NotEmpty
+    @NotNull
+    private String role;
+
     private Date created_at;
 
     private Date updated_at;
