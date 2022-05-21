@@ -8,6 +8,8 @@ import java.util.Map;
 import com.project.entities.Admin;
 import com.project.entities.Customer;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import io.jsonwebtoken.Jwts;
@@ -15,6 +17,8 @@ import io.jsonwebtoken.SignatureAlgorithm;
 
 @Component
 public class JWTUtil {
+
+    private final Logger log = LoggerFactory.getLogger(JWTUtil.class);
     
     private final String SECRET_KEY = "ASDKDLAMSDKLMASKMFGSDKJQ1294052381239RIEIO12390LKANLASD18023";
     
@@ -24,13 +28,14 @@ public class JWTUtil {
         claims.put("name", customer.getName());
         claims.put("password", customer.getPassword());
         claims.put("randomNumber", (int)(Math.random() * 1001));
+        claims.put("exp", new Date(System.currentTimeMillis() + (300000)));
         String token = Jwts.builder()
                             .setSubject(customer.getName())
                             .setIssuedAt(new Date())
-                            .setExpiration(new Date(new Date().getTime() + 1000000000L))
                             .setClaims(claims)
                             .signWith(SignatureAlgorithm.HS256, Base64.getEncoder().encodeToString(SECRET_KEY.getBytes()))
-                            .compact();     
+                            .compact();   
+        log.info("Expire = " + new Date(System.currentTimeMillis() + (300000)));
         return token;        
     }
 
