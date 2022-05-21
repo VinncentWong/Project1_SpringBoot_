@@ -10,15 +10,11 @@ import javax.servlet.http.HttpServletResponse;
 import com.project.security.authentication.JWTAuthentication;
 import com.project.security.manager.JWTManager;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 public class JWTFilter extends OncePerRequestFilter{
-
-    @Autowired
-    private JWTManager jwtManager;
     
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
@@ -28,7 +24,7 @@ public class JWTFilter extends OncePerRequestFilter{
             throw new ServletException("Token doesn't valid");
         } else {
             String token = header.substring(7,header.length());
-            Authentication authenticate = jwtManager.authenticate(new JWTAuthentication(token, null));
+            Authentication authenticate = new JWTManager().authenticate(new JWTAuthentication(token, null));
             SecurityContextHolder.getContext().setAuthentication(authenticate);
         }
         filterChain.doFilter(request, response);

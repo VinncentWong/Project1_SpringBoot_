@@ -5,13 +5,12 @@ import java.util.Base64;
 import java.util.List;
 
 import com.project.security.authentication.JWTAuthentication;
+import com.project.util.JWTUtil;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.stereotype.Component;
 
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
@@ -19,12 +18,11 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureException;
 import io.jsonwebtoken.UnsupportedJwtException;
-@Component
-public class JWTProvider implements AuthenticationProvider{
 
-    @Value("${jwt.secret}")
-    private String secretKey;
+public class JWTProvider implements AuthenticationProvider{
     
+    private String secretKey = new JWTUtil().getSecretKey();
+
     public JWTProvider() {}
 
     @Override
