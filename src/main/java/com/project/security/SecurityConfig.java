@@ -24,6 +24,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
     protected void configure(HttpSecurity http) throws Exception {
         http.addFilterAt(new AuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
         http.addFilterBefore(new JWTFilter(), UsernamePasswordAuthenticationFilter.class);
+
+        http
+        .authorizeRequests()
+        .mvcMatchers("/customer/login", "/customer/signup")
+        .permitAll()
+        .anyRequest()
+        .authenticated();
+
+        http.formLogin().disable();
+        http.csrf().disable();
     }
     
 }
