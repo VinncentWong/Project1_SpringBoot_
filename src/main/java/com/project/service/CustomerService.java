@@ -1,17 +1,20 @@
 package com.project.service;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 import javax.transaction.Transactional;
 
-import com.project.dto.LoginDto;
 import com.project.entities.Customer;
 import com.project.exception.CustomerNotFoundException;
 import com.project.repository.CustomerRepository;
-import com.project.response.AuthResponse;
+import com.project.response.AppResponse;
+import com.project.util.JWTUtil;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -23,9 +26,12 @@ public class CustomerService {
     private CustomerRepository customerRepository;
 
     @Autowired
-    private AuthResponse response;
+    private AppResponse response;
 
-    public AuthResponse registerCustomer(Customer customer){
+    @Autowired
+    private JWTUtil util;
+
+    public AppResponse registerCustomer(Customer customer){
         String hashedPassword = new BCryptPasswordEncoder().encode(customer.getPassword());
         customer.setCreated_at(new Date());
         customer.setPassword(hashedPassword);
@@ -35,21 +41,31 @@ public class CustomerService {
         return response;
     }
 
-    public AuthResponse login(LoginDto bodyCustomer) throws CustomerNotFoundException{
-        Optional<Customer> customer = customerRepository.findByEmail(bodyCustomer.getEmail());
+    public AppResponse login(Authentication auth) throws CustomerNotFoundException{
+        Optional<Customer> customer = customerRepository.findByEmail(auth.getPrincipal().toString());
         if(customer.isEmpty()){
-            throw new CustomerNotFoundException("Customer doesn't exist in database !");
+            response.setSuccess(false);
+            response.setCode(401);
+            response.setMessage("Customer doesn't found in database! ");
+            response.setData(null);
+            return response;
         }
-        boolean valid = new BCryptPasswordEncoder().matches(bodyCustomer.getPassword(), customer.get().getPassword());
-        if(valid){
-            response.setMessage("authenticated !");
+        String password = customer.get().getPassword();
+        if(new BCryptPasswordEncoder().matches(auth.getCredentials().toString(), password)){
+            Map<String, Object> data = new HashMap<>();
+            data.put("email", auth.getPrincipal());
+            data.put("password", auth.getCredentials());
+            data.put("token", util.generateToken(customer.get()));
             response.setCode(200);
+            response.setMessage("Authenticated! ");
             response.setSuccess(true);
+            response.setData(data);
             return response;
         } else {
-            response.setMessage("unauthenticated !");
-            response.setCode(401);
             response.setSuccess(false);
+            response.setCode(401);
+            response.setMessage("Customer doesn't found in database! ");
+            response.setData(null);
             return response;
         }
     }
@@ -62,7 +78,7 @@ public class CustomerService {
         return customerRepository.findAll();
     }
 
-    public AuthResponse deleteCustomerById(long id){
+    public AppResponse deleteCustomerById(long id){
         Optional<Customer> customer = customerRepository.findById(id);
         if(customer.isEmpty()){
             response.setMessage("Customer doesn't exist in database !");
@@ -77,7 +93,7 @@ public class CustomerService {
         }
     }
 
-    public AuthResponse updateCustomer(long id, Customer bodyCustomer){
+    public AppResponse updateCustomer(long id, Customer bodyCustomer){
         Optional<Customer> customer = customerRepository.findById(id);
         if(customer.isEmpty()){
             response.setMessage("Customer doesn't exist in database !");

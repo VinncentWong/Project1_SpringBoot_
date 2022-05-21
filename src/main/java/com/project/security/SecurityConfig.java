@@ -1,5 +1,6 @@
 package com.project.security;
 
+import com.project.security.filter.AuthenticationFilter;
 import com.project.security.filter.JWTFilter;
 import com.project.security.provider.JWTProvider;
 
@@ -21,8 +22,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+        http.addFilterAt(new AuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
         http.addFilterBefore(new JWTFilter(), UsernamePasswordAuthenticationFilter.class);
-        
     }
     
 }

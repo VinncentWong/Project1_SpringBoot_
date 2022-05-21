@@ -1,12 +1,15 @@
 package com.project.response;
 
+import java.util.Map;
+
 import org.springframework.stereotype.Component;
 
 @Component
-public class AuthResponse {
+public class AppResponse {
     private String message;
     private int code;
     private boolean success;
+    private Map<String, Object> data;
     public String getMessage() {
         return message;
     }
@@ -24,5 +27,11 @@ public class AuthResponse {
     }
     public void setSuccess(boolean success) {
         this.success = success;
+    }
+    public Object getData() {
+        return data;
+    }
+    public void setData(Map<String, Object> data) {
+        this.data = data;
     }
 }

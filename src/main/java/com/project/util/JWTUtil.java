@@ -23,7 +23,6 @@ public class JWTUtil {
         Map<String, Object> claims = new HashMap<>();
         claims.put("email", customer.getEmail());
         claims.put("name", customer.getPassword());
-        claims.put("created_at", customer.getCreated_at());
         String token = Jwts.builder()
                             .setSubject(customer.getName())
                             .setIssuedAt(new Date())

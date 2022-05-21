@@ -15,8 +15,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-
-import io.jsonwebtoken.JwtException;
 @Component
 public class JWTFilter extends OncePerRequestFilter{
 
@@ -28,11 +26,12 @@ public class JWTFilter extends OncePerRequestFilter{
             throws ServletException, IOException {
         String header = request.getHeader("Authorization");
         if(header == null || !header.startsWith("Bearer ")){
-            throw new JwtException("Request doesn't valid! ");
+            filterChain.doFilter(request, response);
         }
         String token = header.substring(7,header.length());
         Authentication authenticate = jwtManager.authenticate(new JWTAuthentication(token, null));
         SecurityContextHolder.getContext().setAuthentication(authenticate);
+        filterChain.doFilter(request, response);
     }
     
 }
