@@ -38,7 +38,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
     @Override
     public void configure(WebSecurity web) throws Exception {
         web.ignoring()
-            .mvcMatchers("/customer/login", "/customer/register");
+            .mvcMatchers("/customer/login", "/customer/register", "/api/refresh");
     }
     
 }

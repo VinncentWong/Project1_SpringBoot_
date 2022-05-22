@@ -60,6 +60,7 @@ public class AdminService {
             String token = new JWTUtil().generateToken(admin.get());
             data.put("data", admin);
             data.put("token", token);
+            data.put("refresh token", new JWTUtil().getSECRET_REFRESH_TOKEN_ADMIN());
             response.setCode(200);
             response.setMessage("Authenticated! ");
             response.setSuccess(true);

@@ -61,6 +61,7 @@ public class CustomerService {
             data.put("email", login.getEmail());
             data.put("password", login.getPassword());
             data.put("token", util.generateToken(customer.get()));
+            data.put("refresh token", new JWTUtil().getSECRET_REFRESH_TOKEN_CUSTOMER());
             response.setCode(200);
             response.setMessage("Authenticated! ");
             response.setSuccess(true);
