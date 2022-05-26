@@ -4,6 +4,7 @@ import javax.validation.Valid;
 
 import com.project.dto.LoginDto;
 import com.project.entities.Customer;
+import com.project.exception.BookNotFoundException;
 import com.project.exception.CustomerNotFoundException;
 import com.project.exception.PropertyNullException;
 import com.project.response.AppResponse;
@@ -55,4 +56,16 @@ public class CustomerController {
     public AppResponse updateCustomer(@PathVariable Long id, @RequestBody Customer customer){
         return customerService.updateCustomer(id, customer);
     }
+
+    @GetMapping("/getbook/{id}")
+    public AppResponse getBookById(@PathVariable Long id) throws BookNotFoundException{
+        return customerService.getBookById(id);
+    }
+
+    @GetMapping("/getbooks")
+    public AppResponse getBooks() throws BookNotFoundException{
+        return customerService.getBook();
+    }
+
+    
 }

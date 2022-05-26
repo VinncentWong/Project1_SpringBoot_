@@ -2,8 +2,11 @@ package com.project.security.userdetailsservice;
 
 import java.util.Optional;
 
+import com.project.entities.Admin;
 import com.project.entities.Customer;
+import com.project.repository.AdminRepository;
 import com.project.repository.CustomerRepository;
+import com.project.security.AdminDetails;
 import com.project.security.CustomerDetails;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,11 +21,18 @@ public class JWTDetailsService implements UserDetailsService{
     @Autowired
     private CustomerRepository customerRepository;
 
+    @Autowired
+    private AdminRepository adminRepository;
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Optional<Customer> customer = customerRepository.findByName(username);
-        UserDetails customerDetails = new CustomerDetails(customer.get());
-        return customerDetails;
+        Optional<Admin> admin = adminRepository.findByName(username);
+        if(customer.isEmpty()){
+            return new AdminDetails(admin.get());
+        } else {
+            return new CustomerDetails(customer.get());
+        }
     }
     
 }

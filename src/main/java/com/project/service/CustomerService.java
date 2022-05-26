@@ -2,14 +2,18 @@ package com.project.service;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
 import javax.transaction.Transactional;
 
 import com.project.dto.LoginDto;
+import com.project.entities.Book;
 import com.project.entities.Customer;
+import com.project.exception.BookNotFoundException;
 import com.project.exception.CustomerNotFoundException;
+import com.project.repository.BookRepository;
 import com.project.repository.CustomerRepository;
 import com.project.response.AppResponse;
 import com.project.util.JWTUtil;
@@ -24,6 +28,9 @@ public class CustomerService {
     
     @Autowired
     private CustomerRepository customerRepository;
+
+    @Autowired
+    private BookRepository bookRepository;
 
     @Autowired
     private AppResponse response;
@@ -123,5 +130,31 @@ public class CustomerService {
             response.setSuccess(true);
             return response;
         }
+    }
+
+    public AppResponse getBookById(Long id) throws BookNotFoundException{
+        Optional<Book> book = bookRepository.findById(id);
+        if(book.isEmpty()){
+            throw new BookNotFoundException("Book data doesn't found! ");
+        }
+        Map<String, Object> data = new HashMap<>();
+        data.put("data", book.get());
+        response.setMessage("Succesfully update Book data! ");
+        response.setSuccess(true);
+        response.setData(data);
+        return response;
+    }
+
+    public AppResponse getBook() throws BookNotFoundException{
+        List<Book> book = bookRepository.findAll();
+        if(book.isEmpty()){
+            throw new BookNotFoundException("Book data doesn't found! ");
+        }
+        Map<String, Object> data = new HashMap<>();
+        data.put("data", book);
+        response.setMessage("Succesfully update Book data! ");
+        response.setSuccess(true);
+        response.setData(data);
+        return response;
     }
 }

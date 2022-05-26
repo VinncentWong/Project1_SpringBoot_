@@ -18,14 +18,13 @@ import lombok.Data;
 
 @Entity
 @Data
-public class Invoice{
+public class WishList{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @NotNull
-    @NotEmpty
-    private String bookName;
+    private Book book;
 
     @NotNull
     @PositiveOrZero
