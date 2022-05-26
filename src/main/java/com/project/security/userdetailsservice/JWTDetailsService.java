@@ -30,8 +30,10 @@ public class JWTDetailsService implements UserDetailsService{
         Optional<Admin> admin = adminRepository.findByName(username);
         if(customer.isEmpty()){
             return new AdminDetails(admin.get());
-        } else {
+        } else if(admin.isEmpty()){
             return new CustomerDetails(customer.get());
+        } else {
+            throw new UsernameNotFoundException("User doesn't found in database! ");
         }
     }
     

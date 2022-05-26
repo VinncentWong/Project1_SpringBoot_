@@ -28,6 +28,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 
         http
         .authorizeRequests()
+        .mvcMatchers("/customer/**").hasRole("CUSTOMER")
+        .mvcMatchers("/admin/**").hasRole("ADMIN")
         .anyRequest()
         .permitAll();
 
@@ -38,7 +40,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
     @Override
     public void configure(WebSecurity web) throws Exception {
         web.ignoring()
-            .mvcMatchers("/customer/login", "/customer/register", "/api/refresh");
+            .mvcMatchers("/customer/login", "/customer/register", "/api/refresh", "/admin/create", "admin/login");
     }
     
 }

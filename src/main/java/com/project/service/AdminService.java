@@ -38,7 +38,6 @@ public class AdminService {
     
     public AppResponse createAdmin(Admin admin){
         admin.setCreated_at(new Date());
-        admin.setRole("ROLE_ADMIN");
         adminRepository.save(admin);
         Map<String, Object> data = new HashMap<>();
         data.put("data", admin);
@@ -125,6 +124,7 @@ public class AdminService {
         return response;
     }
     public AppResponse addBook(Book book){
+        book.setUpdated_at(new Date());
         bookRepository.save(book);
         Map<String, Object> data = new HashMap<>();
         data.put("data", book);
@@ -164,6 +164,7 @@ public class AdminService {
         if(bodyBook.getSynopsis() != null){
             book.get().setSynopsis(bodyBook.getSynopsis());
         }
+        book.get().setUpdated_at(new Date());
         bookRepository.save(book.get());
         Map<String, Object> data = new HashMap<>();
         data.put("data", book.get());

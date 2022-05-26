@@ -1,18 +1,18 @@
 package com.project.security.provider;
 
-import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Date;
-import java.util.List;
 import java.util.Map;
 
 import com.project.security.authentication.JWTAuthentication;
+import com.project.security.userdetailsservice.JWTDetailsService;
 import com.project.util.JWTUtil;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -25,6 +25,9 @@ import io.jsonwebtoken.UnsupportedJwtException;
 public class JWTProvider implements AuthenticationProvider{
 
     private String secretKey = new JWTUtil().getSecretKey();
+
+    @Autowired
+    private JWTDetailsService jwtDetailsService;
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
@@ -42,9 +45,9 @@ public class JWTProvider implements AuthenticationProvider{
                     }
                 }
             }
-            List<SimpleGrantedAuthority> authorities = new ArrayList<>();
-            authorities.add(new SimpleGrantedAuthority("true"));
-            return new JWTAuthentication(authentication.getPrincipal().toString(), null, authorities);
+            String subject = exp.getSubject();
+            UserDetails details = jwtDetailsService.loadUserByUsername(subject);
+            return new JWTAuthentication(details.getUsername(), details.getPassword(), details.getAuthorities());
         }
         catch(SignatureException ex){
             throw new SignatureException("Token signature doesn't valid! ");

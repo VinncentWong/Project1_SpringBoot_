@@ -42,7 +42,6 @@ public class CustomerService {
         String hashedPassword = new BCryptPasswordEncoder().encode(customer.getPassword());
         customer.setCreated_at(new Date());
         customer.setPassword(hashedPassword);
-        customer.setRole("ROLE_CUSTOMER");
         response.setMessage("Successfully add your data into database !");
         response.setCode(201);
         response.setSuccess(true);

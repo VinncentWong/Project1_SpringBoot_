@@ -1,8 +1,17 @@
 package com.project.dto;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
 public class LoginDto {
+    @NotNull
+    @NotBlank
     private String email;
+
+    @NotNull
+    @NotBlank
     private String password;
+    
     public String getEmail() {
         return email;
     }

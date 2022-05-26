@@ -2,10 +2,12 @@ package com.project.controller;
 
 import javax.validation.Valid;
 
+import com.project.dto.LoginDto;
 import com.project.entities.Admin;
 import com.project.entities.Book;
 import com.project.exception.AdminNotFoundException;
 import com.project.exception.BookNotFoundException;
+import com.project.exception.PasswordDoesntMatchException;
 import com.project.response.AppResponse;
 import com.project.service.AdminService;
 
@@ -29,6 +31,11 @@ public class AdminController {
     @PostMapping("/create")
     public AppResponse createAdmin(@RequestBody @Valid Admin admin){
         return adminService.createAdmin(admin);
+    }
+
+    @PostMapping("/login")
+    public AppResponse login(@Valid LoginDto bodyLogin) throws PasswordDoesntMatchException, AdminNotFoundException{
+        return adminService.login(bodyLogin);
     }
 
     @GetMapping("/get/{id}")
