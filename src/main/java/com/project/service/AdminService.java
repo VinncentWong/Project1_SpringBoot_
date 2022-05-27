@@ -125,7 +125,7 @@ public class AdminService {
         return response;
     }
     public AppResponse addBook(Book book){
-        book.setUpdated_at(new Date());
+        book.setCreated_at(new Date());
         bookRepository.save(book);
         Map<String, Object> data = new HashMap<>();
         data.put("data", book);
@@ -195,7 +195,7 @@ public class AdminService {
         }
         Map<String, Object> data = new HashMap<>();
         data.put("data", book);
-        response.setMessage("Succesfully update Book data! ");
+        response.setMessage("Succesfully get Book data! ");
         response.setSuccess(true);
         response.setData(data);
         return response;
