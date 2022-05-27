@@ -36,4 +36,12 @@ public class Admin {
     private Date updated_at;
     
     private Date deleted_at;
+
+    public Admin(Long id, @NotNull @NotEmpty String name, @NotNull @NotEmpty String password,
+            @NotNull @NotEmpty String email) {
+        this.id = id;
+        this.name = name;
+        this.password = password;
+        this.email = email;
+    }
 }
