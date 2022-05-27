@@ -37,6 +37,7 @@ public class AdminService {
     private AppResponse response;
     
     public AppResponse createAdmin(Admin admin){
+        admin.setPassword(new BCryptPasswordEncoder().encode(admin.getPassword()));
         admin.setCreated_at(new Date());
         adminRepository.save(admin);
         Map<String, Object> data = new HashMap<>();

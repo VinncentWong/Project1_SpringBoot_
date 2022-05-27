@@ -34,7 +34,7 @@ public class AdminController {
     }
 
     @PostMapping("/login")
-    public AppResponse login(@Valid LoginDto bodyLogin) throws PasswordDoesntMatchException, AdminNotFoundException{
+    public AppResponse login(@Valid @RequestBody LoginDto bodyLogin) throws PasswordDoesntMatchException, AdminNotFoundException{
         return adminService.login(bodyLogin);
     }
 
