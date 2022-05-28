@@ -19,8 +19,6 @@ import com.project.util.JWTUtil;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -85,15 +83,9 @@ public class AdminService {
     }
 
     public AppResponse deleteAdmin(Long id) throws AdminNotFoundException, Exception{
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String token = auth.getPrincipal().toString();
-        String subject = new JWTUtil().getSubject(token);
         Optional<Admin> admin = adminRepository.findById(id);
         if(admin.isEmpty()){
             throw new AdminNotFoundException("Admin data doesn't found in database! ");
-        }
-        if(!subject.equals(admin.get().getName())){
-            throw new Exception("Can't delete another Admin data! ");
         }
         adminRepository.deleteById(id);
         response.setCode(200);
@@ -112,7 +104,7 @@ public class AdminService {
             admin.get().setName(bodyAdmin.getName());
         }
         if(bodyAdmin.getPassword() != null){
-            admin.get().setPassword(bodyAdmin.getPassword());
+            admin.get().setPassword(new BCryptPasswordEncoder().encode(bodyAdmin.getPassword()));
         }
         admin.get().setUpdated_at(new Date());
         adminRepository.save(admin.get());
@@ -145,6 +137,7 @@ public class AdminService {
         response.setMessage("Succesfully delete Book data! ");
         response.setSuccess(true);
         response.setData(null);
+        response.setCode(200);
         return response;
     }
 
@@ -156,10 +149,10 @@ public class AdminService {
         if(bodyBook.getName() != null){
             book.get().setName(bodyBook.getName());
         }
-        if(bodyBook.getPrice() != book.get().getPrice()){
+        if(bodyBook.getPrice() != book.get().getPrice() && bodyBook.getPrice() != 0){
             book.get().setPrice(bodyBook.getPrice());
         }
-        if(bodyBook.getStock() != book.get().getStock()){
+        if(bodyBook.getStock() != book.get().getStock() && bodyBook.getStock() != 0){
             book.get().setStock(bodyBook.getStock());
         }
         if(bodyBook.getSynopsis() != null){
@@ -185,6 +178,7 @@ public class AdminService {
         response.setMessage("Succesfully update Book data! ");
         response.setSuccess(true);
         response.setData(data);
+        response.setCode(200);
         return response;
     }
 
@@ -198,6 +192,7 @@ public class AdminService {
         response.setMessage("Succesfully get Book data! ");
         response.setSuccess(true);
         response.setData(data);
+        response.setCode(200);
         return response;
     }
 }

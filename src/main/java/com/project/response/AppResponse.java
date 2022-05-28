@@ -3,7 +3,6 @@ package com.project.response;
 import java.util.Map;
 
 import org.springframework.stereotype.Component;
-
 @Component
 public class AppResponse {
     private String message;
