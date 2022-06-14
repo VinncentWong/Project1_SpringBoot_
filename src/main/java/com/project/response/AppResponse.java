@@ -3,7 +3,13 @@ package com.project.response;
 import java.util.Map;
 
 import org.springframework.stereotype.Component;
+
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+
 @Component
+@NoArgsConstructor
+@AllArgsConstructor
 public class AppResponse {
     private String message;
     private int code;
