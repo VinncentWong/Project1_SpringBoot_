@@ -19,6 +19,8 @@ import com.project.util.JWTUtil;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -34,20 +36,19 @@ public class AdminService {
     @Autowired
     private AppResponse response;
     
-    public AppResponse createAdmin(Admin admin){
+    public ResponseEntity<AppResponse> createAdmin(Admin admin){
         admin.setPassword(new BCryptPasswordEncoder().encode(admin.getPassword()));
         admin.setCreated_at(new Date());
         adminRepository.save(admin);
         Map<String, Object> data = new HashMap<>();
         data.put("data", admin);
-        response.setCode(200);
         response.setMessage("Succesfully add Admin data! ");
         response.setSuccess(true);
         response.setData(data);
-        return response;
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    public AppResponse login(LoginDto bodyLogin) throws AdminNotFoundException, PasswordDoesntMatchException{
+    public ResponseEntity<AppResponse> login(LoginDto bodyLogin) throws AdminNotFoundException, PasswordDoesntMatchException{
         Optional<Admin> admin = adminRepository.findByEmail(bodyLogin.getEmail());
         if(admin.isEmpty()){
             throw new AdminNotFoundException("Admin data doesn't found in database! ");
@@ -59,43 +60,40 @@ public class AdminService {
             data.put("data", admin);
             data.put("token", token);
             data.put("refresh token", new JWTUtil().getSECRET_REFRESH_TOKEN_ADMIN());
-            response.setCode(200);
             response.setMessage("Authenticated! ");
             response.setSuccess(true);
             response.setData(data);
-            return response;
+            return ResponseEntity.status(HttpStatus.OK).body(response);
         } else {
             throw new PasswordDoesntMatchException("Password doesnt match! ");
         }
     }
-    public AppResponse getAdminById(Long id) throws AdminNotFoundException{
+    public ResponseEntity<AppResponse> getAdminById(Long id) throws AdminNotFoundException{
         Optional<Admin> admin = adminRepository.findById(id);
         if(admin.isEmpty()){
             throw new AdminNotFoundException("Admin data doesn't found in database! ");
         }
         Map<String, Object> data = new HashMap<>();
         data.put("data", admin);
-        response.setCode(200);
         response.setMessage("Succesfully find Admin data! ");
         response.setSuccess(true);
         response.setData(data);
-        return response;
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
-    public AppResponse deleteAdmin(Long id) throws AdminNotFoundException, Exception{
+    public ResponseEntity<AppResponse> deleteAdmin(Long id) throws AdminNotFoundException, Exception{
         Optional<Admin> admin = adminRepository.findById(id);
         if(admin.isEmpty()){
             throw new AdminNotFoundException("Admin data doesn't found in database! ");
         }
         adminRepository.deleteById(id);
-        response.setCode(200);
         response.setMessage("Succesfully delete Admin data! ");
         response.setSuccess(true);
         response.setData(null);
-        return response;
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
-    public AppResponse updateAdmin(Long id, Admin bodyAdmin) throws AdminNotFoundException{
+    public ResponseEntity<AppResponse> updateAdmin(Long id, Admin bodyAdmin) throws AdminNotFoundException{
         Optional<Admin> admin = adminRepository.findById(id);
         if(admin.isEmpty()){
             throw new AdminNotFoundException("Admin data doesn't found in database! ");
@@ -110,25 +108,23 @@ public class AdminService {
         adminRepository.save(admin.get());
         Map<String, Object> data = new HashMap<>();
         data.put("data", admin);
-        response.setCode(200);
         response.setMessage("Succesfully update Book data! ");
         response.setSuccess(true);
         response.setData(data);
-        return response;
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
-    public AppResponse addBook(Book book){
+    public ResponseEntity<AppResponse> addBook(Book book){
         book.setCreated_at(new Date());
         bookRepository.save(book);
         Map<String, Object> data = new HashMap<>();
         data.put("data", book);
-        response.setCode(200);
         response.setMessage("Succesfully add Book data! ");
         response.setSuccess(true);
         response.setData(data);
-        return response;
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    public AppResponse deleteBook(Long id) throws BookNotFoundException{
+    public ResponseEntity<AppResponse> deleteBook(Long id) throws BookNotFoundException{
         Optional<Book> book = bookRepository.findById(id);
         if(book.isEmpty()){
             throw new BookNotFoundException("Book data doesn't found! ");
@@ -137,11 +133,10 @@ public class AdminService {
         response.setMessage("Succesfully delete Book data! ");
         response.setSuccess(true);
         response.setData(null);
-        response.setCode(200);
-        return response;
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
-    public AppResponse updateBook(Long id, Book bodyBook) throws BookNotFoundException{
+    public ResponseEntity<AppResponse> updateBook(Long id, Book bodyBook) throws BookNotFoundException{
         Optional<Book> book = bookRepository.findById(id);
         if(book.isEmpty()){
             throw new BookNotFoundException("Book data doesn't found! ");
@@ -165,10 +160,10 @@ public class AdminService {
         response.setMessage("Succesfully update Book data! ");
         response.setSuccess(true);
         response.setData(data);
-        return response;
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
-    public AppResponse getBookById(Long id) throws BookNotFoundException{
+    public ResponseEntity<AppResponse> getBookById(Long id) throws BookNotFoundException{
         Optional<Book> book = bookRepository.findById(id);
         if(book.isEmpty()){
             throw new BookNotFoundException("Book data doesn't found! ");
@@ -178,11 +173,10 @@ public class AdminService {
         response.setMessage("Succesfully update Book data! ");
         response.setSuccess(true);
         response.setData(data);
-        response.setCode(200);
-        return response;
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
-    public AppResponse getBook() throws BookNotFoundException{
+    public ResponseEntity<AppResponse> getBook() throws BookNotFoundException{
         List<Book> book = bookRepository.findAll();
         if(book.isEmpty()){
             throw new BookNotFoundException("Book data doesn't found! ");
@@ -192,7 +186,6 @@ public class AdminService {
         response.setMessage("Succesfully get Book data! ");
         response.setSuccess(true);
         response.setData(data);
-        response.setCode(200);
-        return response;
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 }

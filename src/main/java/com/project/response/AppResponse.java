@@ -12,7 +12,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class AppResponse {
     private String message;
-    private int code;
     private boolean success;
     private Map<String, Object> data;
     public String getMessage() {
@@ -20,12 +19,6 @@ public class AppResponse {
     }
     public void setMessage(String message) {
         this.message = message;
-    }
-    public int getCode() {
-        return code;
-    }
-    public void setCode(int code) {
-        this.code = code;
     }
     public boolean isSuccess() {
         return success;

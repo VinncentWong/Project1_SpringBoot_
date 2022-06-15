@@ -17,10 +17,6 @@ import lombok.Setter;
 
 @Entity
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
-@Setter
-@Getter
 public class Admin {
     
     @Id
