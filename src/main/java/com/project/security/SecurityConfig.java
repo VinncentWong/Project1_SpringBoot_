@@ -3,12 +3,16 @@ package com.project.security;
 import com.project.security.filter.AuthenticationFilter;
 import com.project.security.filter.JWTFilter;
 
+import java.util.List;
+
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
 
 @Configuration
 @EnableWebSecurity
@@ -27,6 +31,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 
         http.formLogin().disable();
         http.csrf().disable();
+        
+        http.cors(corsConfigurer -> {
+        	CorsConfigurationSource src = request -> {
+        		CorsConfiguration config = new CorsConfiguration();
+        		config.setAllowedOrigins(List.of("*"));
+        		config.setAllowedHeaders(List.of("*"));
+        		config.setAllowedMethods(List.of("*"));
+        		return config;
+        	};
+        	corsConfigurer.configurationSource(src);
+        });
     }
 
     @Override
