@@ -11,6 +11,7 @@ import com.project.response.AppResponse;
 import com.project.service.CustomerService;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -28,42 +29,42 @@ public class CustomerController {
     private CustomerService customerService;
 
     @PostMapping("/register")
-    public AppResponse registerCustomer(@RequestBody @Valid Customer bodyCustomer){
+    public ResponseEntity<AppResponse> registerCustomer(@RequestBody @Valid Customer bodyCustomer){
         return customerService.registerCustomer(bodyCustomer);
     }
 
     @PostMapping("/login")
-    public AppResponse login(@RequestBody @Valid LoginDto bodyLogin) throws CustomerNotFoundException, PropertyNullException{
+    public ResponseEntity<AppResponse> login(@RequestBody @Valid LoginDto bodyLogin) throws CustomerNotFoundException, PropertyNullException{
         return customerService.login(bodyLogin);
     }
 
     @GetMapping("/get/{id}")
-    public Customer getCustomerById(@PathVariable Long id){
+    public ResponseEntity<AppResponse> getCustomerById(@PathVariable Long id) throws CustomerNotFoundException{
         return customerService.getCustomerById(id);
     }
 
     @GetMapping("/get")
-    public Iterable<Customer> getAllCustomer(){
+    public ResponseEntity<AppResponse> getAllCustomer(){
         return customerService.getAllCustomer();
     }
 
     @DeleteMapping("/delete/{id}")
-    public AppResponse deleteCustomer(@PathVariable Long id){
+    public ResponseEntity<AppResponse> deleteCustomer(@PathVariable Long id){
         return customerService.deleteCustomerById(id);
     }
 
     @PatchMapping("/update/{id}")
-    public AppResponse updateCustomer(@PathVariable Long id, @RequestBody Customer customer){
+    public ResponseEntity<AppResponse> updateCustomer(@PathVariable Long id, @RequestBody Customer customer){
         return customerService.updateCustomer(id, customer);
     }
 
     @GetMapping("/getbook/{id}")
-    public AppResponse getBookById(@PathVariable Long id) throws BookNotFoundException{
+    public ResponseEntity<AppResponse> getBookById(@PathVariable Long id) throws BookNotFoundException{
         return customerService.getBookById(id);
     }
 
     @GetMapping("/getbooks")
-    public AppResponse getBooks() throws BookNotFoundException{
+    public ResponseEntity<AppResponse> getBooks() throws BookNotFoundException{
         return customerService.getBook();
     }
 
