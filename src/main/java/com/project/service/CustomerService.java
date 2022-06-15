@@ -19,6 +19,8 @@ import com.project.response.AppResponse;
 import com.project.util.JWTUtil;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -38,28 +40,26 @@ public class CustomerService {
     @Autowired
     private JWTUtil util;
 
-    public AppResponse registerCustomer(Customer customer){
+    public ResponseEntity<AppResponse> registerCustomer(Customer customer){
         String hashedPassword = new BCryptPasswordEncoder().encode(customer.getPassword());
         customer.setCreated_at(new Date());
         customer.setPassword(hashedPassword);
         response.setMessage("Successfully add your data into database !");
-        response.setCode(201);
         response.setSuccess(true);
         Map<String, Object> data = new HashMap<>();
         data.put("data", customer);
         response.setData(data);
         customerRepository.save(customer);
-        return response;
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    public AppResponse login(LoginDto login) throws CustomerNotFoundException{
+    public ResponseEntity<AppResponse> login(LoginDto login) throws CustomerNotFoundException{
         Optional<Customer> customer = customerRepository.findByEmail(login.getEmail());
         if(customer.isEmpty()){
             response.setSuccess(false);
-            response.setCode(401);
             response.setMessage("Customer doesn't found in database! ");
             response.setData(null);
-            return response;
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
         String password = customer.get().getPassword();
         if(new BCryptPasswordEncoder().matches(login.getPassword(), password)){
@@ -68,51 +68,50 @@ public class CustomerService {
             data.put("password", login.getPassword());
             data.put("token", util.generateToken(customer.get()));
             data.put("refresh token", new JWTUtil().getSECRET_REFRESH_TOKEN_CUSTOMER());
-            response.setCode(200);
             response.setMessage("Authenticated! ");
             response.setSuccess(true);
             response.setData(data);
-            return response;
+            return ResponseEntity.status(HttpStatus.OK).body(response);
         } else {
             response.setSuccess(false);
-            response.setCode(401);
             response.setMessage("Customer doesn't found in database! ");
             response.setData(null);
-            return response;
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }
 
-    public Customer getCustomerById(long id){
-        return customerRepository.findById(id).get();
+    public ResponseEntity<AppResponse> getCustomerById(long id) throws CustomerNotFoundException{
+    	Map<String, Object> data = new HashMap<>();
+    	data.put("data", customerRepository.findById(id).orElseThrow(() -> new CustomerNotFoundException()));
+    	return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
-    public Iterable<Customer> getAllCustomer(){
-        return customerRepository.findAll();
+    public ResponseEntity<AppResponse> getAllCustomer(){
+        Map<String, List<Customer>> data = new HashMap<>();
+        data.put("data", customerRepository.findAll());
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
-    public AppResponse deleteCustomerById(long id){
+    public ResponseEntity<AppResponse> deleteCustomerById(long id){
         Optional<Customer> customer = customerRepository.findById(id);
         if(customer.isEmpty()){
             response.setMessage("Customer doesn't exist in database !");
-            response.setCode(404);
             response.setSuccess(false);
-            return response;
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         } else {
             customerRepository.delete(customer.get());
             response.setMessage("Success delete the user !");
-            response.setCode(200);
             response.setSuccess(true);
-            return response;
+            return ResponseEntity.status(HttpStatus.OK).body(response);
         }
     }
 
-    public AppResponse updateCustomer(long id, Customer bodyCustomer){
+    public ResponseEntity<AppResponse> updateCustomer(long id, Customer bodyCustomer){
         Optional<Customer> customer = customerRepository.findById(id);
         if(customer.isEmpty()){
             response.setMessage("Customer doesn't exist in database !");
-            response.setCode(404);
             response.setSuccess(false);
-            return response;
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         } else {
             if(customer.get().getName() != null){
                 customer.get().setName(bodyCustomer.getName());
@@ -125,13 +124,12 @@ public class CustomerService {
             }
             customer.get().setUpdated_at(new Date());
             response.setMessage("Success update the user !");
-            response.setCode(200);
             response.setSuccess(true);
-            return response;
+            return ResponseEntity.status(HttpStatus.OK).body(response);
         }
     }
 
-    public AppResponse getBookById(Long id) throws BookNotFoundException{
+    public ResponseEntity<AppResponse> getBookById(Long id) throws BookNotFoundException{
         Optional<Book> book = bookRepository.findById(id);
         if(book.isEmpty()){
             throw new BookNotFoundException("Book data doesn't found! ");
@@ -141,10 +139,10 @@ public class CustomerService {
         response.setMessage("Succesfully update Book data! ");
         response.setSuccess(true);
         response.setData(data);
-        return response;
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
-    public AppResponse getBook() throws BookNotFoundException{
+    public ResponseEntity<AppResponse> getBook() throws BookNotFoundException{
         List<Book> book = bookRepository.findAll();
         if(book.isEmpty()){
             throw new BookNotFoundException("Book data doesn't found! ");
@@ -154,6 +152,6 @@ public class CustomerService {
         response.setMessage("Succesfully update Book data! ");
         response.setSuccess(true);
         response.setData(data);
-        return response;
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 }

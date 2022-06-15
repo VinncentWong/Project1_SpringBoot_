@@ -63,7 +63,6 @@ public class RefreshTokenController {
                 responseData.put("new token", newToken);
                 AppResponse response = new AppResponse();
                 response.setData(responseData);
-                response.setCode(200);
                 response.setSuccess(true);
                 response.setMessage("Refresh token and expired access token is valid! ");
                 return response;
