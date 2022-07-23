@@ -35,9 +35,12 @@ public class AdminService {
 
     @Autowired
     private AppResponse response;
+
+    @Autowired
+    private BCryptPasswordEncoder bcrypt;
     
     public ResponseEntity<AppResponse> createAdmin(Admin admin){
-        admin.setPassword(new BCryptPasswordEncoder().encode(admin.getPassword()));
+        admin.setPassword(bcrypt.encode(admin.getPassword()));
         admin.setCreated_at(new Date());
         adminRepository.save(admin);
         Map<String, Object> data = new HashMap<>();
