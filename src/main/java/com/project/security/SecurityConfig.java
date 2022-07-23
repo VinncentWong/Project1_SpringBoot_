@@ -67,7 +67,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
     	return new JWTProvider();
     }
 
-    @Bean()
+    @Bean
     public JWTFilter filter() {
     	return new JWTFilter();
     }
