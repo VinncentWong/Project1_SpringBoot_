@@ -1,9 +1,10 @@
 package com.service;
 
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -11,17 +12,14 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.aspectj.lang.annotation.Before;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
@@ -49,12 +47,10 @@ public class AdminServiceTest {
 	@Mock
 	private BCryptPasswordEncoder bcrypt;
 
-	@Mock
-	private ResponseEntity responseEntity; 
+	@MockBean
+	private ResponseEntity<AppResponse> responseEntity; 
 
 	private  Admin admin;
-
-	private Logger log = LoggerFactory.getLogger(AdminServiceTest.class);
 	
 	public void init() {
 		admin = new Admin();
@@ -65,18 +61,27 @@ public class AdminServiceTest {
 		admin.setName("centwong");
 		admin.setPassword("centwong");
 		admin.setUpdated_at(null);
+
+		response = new AppResponse();
+		Map<String, Object> map = new HashMap<>();
+		map.put("data", admin);
+		response.setMessage("success");
+		response.setSuccess(true);
+		response.setData(map);
 	}
 	
 	@Test
 	@DisplayName("admin should be created")
 	public void adminShouldBeCreated() {
+		// Assumption
 		init();
 		when(adminRepository.save(admin)).thenReturn(admin);
 		when(bcrypt.encode(admin.getPassword())).thenReturn(admin.getPassword());
-		when(responseEntity.status(anyInt())).thenReturn(responseEntity.status(201));
+		// Call
 		var response = adminService.createAdmin(admin);
-		var mapData = response.getBody();
-		verify(adminRepository).save(admin);
-		assertEquals(mapData.getData(), admin);
+
+		//Validation
+		assertEquals(HttpStatus.CREATED, response.getStatusCode());
+		verify(adminRepository, times(1)).save(admin);
 	}
 }
