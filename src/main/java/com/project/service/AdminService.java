@@ -38,6 +38,9 @@ public class AdminService {
 
     @Autowired
     private BCryptPasswordEncoder bcrypt;
+
+    @Autowired
+    private JWTUtil util;
     
     public ResponseEntity<AppResponse> createAdmin(Admin admin){
         admin.setPassword(bcrypt.encode(admin.getPassword()));
@@ -57,9 +60,9 @@ public class AdminService {
             throw new AdminNotFoundException("Admin data doesn't found in database! ");
         }
         String password = admin.get().getPassword();
-        if(new BCryptPasswordEncoder().matches(bodyLogin.getPassword(), password)){
+        if(bcrypt.matches(bodyLogin.getPassword(), password)){
             Map<String, Object> data = new HashMap<>();
-            String token = new JWTUtil().generateToken(admin.get());
+            String token = util.generateToken(admin.get());
             data.put("data", admin);
             data.put("token", token);
             data.put("refresh token", new JWTUtil().getSECRET_REFRESH_TOKEN_ADMIN());

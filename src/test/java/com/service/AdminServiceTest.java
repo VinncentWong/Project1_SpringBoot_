@@ -3,7 +3,6 @@ package com.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -11,6 +10,7 @@ import static org.mockito.Mockito.when;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -23,11 +23,15 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import com.project.dto.LoginDto;
 import com.project.entities.Admin;
+import com.project.exception.AdminNotFoundException;
+import com.project.exception.PasswordDoesntMatchException;
 import com.project.repository.AdminRepository;
 import com.project.repository.BookRepository;
 import com.project.response.AppResponse;
 import com.project.service.AdminService;
+import com.project.util.JWTUtil;
 
 @ExtendWith(MockitoExtension.class)
 public class AdminServiceTest {
@@ -49,6 +53,9 @@ public class AdminServiceTest {
 
 	@MockBean
 	private ResponseEntity<AppResponse> responseEntity; 
+
+	@Mock
+	private JWTUtil util;
 
 	private  Admin admin;
 	
@@ -83,5 +90,23 @@ public class AdminServiceTest {
 		//Validation
 		assertEquals(HttpStatus.CREATED, response.getStatusCode());
 		verify(adminRepository, times(1)).save(admin);
+	}
+
+	@Test
+	@DisplayName("admin should success login")
+	public void adminShouldSuccessLogin() throws AdminNotFoundException, PasswordDoesntMatchException{
+		init();
+		Optional<Admin> optional = Optional.ofNullable(admin);
+		when(adminRepository.findByEmail(admin.getEmail())).thenReturn(optional);
+		when(bcrypt.matches(admin.getPassword(), optional.get().getPassword())).thenReturn(true);
+		when(util.generateToken(admin)).thenReturn("key");
+		LoginDto dto = new LoginDto();
+		dto.setEmail(admin.getEmail());
+		dto.setPassword(admin.getPassword());
+		var mockResponse = adminService.login(dto);
+		assertEquals(HttpStatus.OK, mockResponse.getStatusCode());
+		verify(adminRepository, times(1)).findByEmail(admin.getEmail());
+		verify(bcrypt, times(1)).matches(admin.getPassword(), optional.get().getPassword());
+		verify(util, times(1)).generateToken(admin);
 	}
 }
