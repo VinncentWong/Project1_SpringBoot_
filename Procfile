@@ -1,0 +1,1 @@
+web: java -jar target/Project1_SpringBoot_.jar
